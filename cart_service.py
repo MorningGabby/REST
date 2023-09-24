@@ -15,6 +15,8 @@ def get_cart(user_id):
     total_price = sum(item['price'] * item['quantity'] for item in cart.values())
     return jsonify({'cart': list(cart.values()), 'total_price': total_price})
 
+PRODUCT_SERVICE_URL = 'https://saas-assignment2-iw8y.onrender.com'
+
 @app.route('/cart/<int:user_id>/add/<int:product_id>', methods=['POST'])
 def add_to_cart(user_id, product_id):
     quantity = request.json.get('quantity', 1)
@@ -32,6 +34,7 @@ def add_to_cart(user_id, product_id):
         cart[product_id] = {'id': product_id, 'name': product['name'], 'price': product['price'], 'quantity': quantity}
     
     return jsonify(cart[product_id])
+
 
 @app.route('/cart/<int:user_id>/remove/<int:product_id>', methods=['POST'])
 def remove_from_cart(user_id, product_id):
