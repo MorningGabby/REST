@@ -1,20 +1,24 @@
+#Gabriella Rivera
+#Assignment 2
 from flask import Flask, jsonify, request
 import requests
 
 app = Flask(__name__)
 
-# Storage for carts
+#Storage for carts
 carts = {}
 
-# URL of the deployed Product Service on Render
+#URL of the deployed Product Service on Render
 PRODUCT_SERVICE_URL = 'https://saas-assignment2-iw8y.onrender.com'
 
+#retrieve cart with user id
 @app.route('/cart/<int:user_id>', methods=['GET'])
 def get_cart(user_id):
     cart = carts.get(user_id, {})
     total_price = sum(item['price'] * item['quantity'] for item in cart.values())
     return jsonify({'cart': list(cart.values()), 'total_price': total_price})
 
+#add quanity of product to the cart with user id and product id
 @app.route('/cart/<int:user_id>/add/<int:product_id>', methods=['POST'])
 def add_to_cart(user_id, product_id):
     quantity = request.json.get('quantity', 1)
@@ -33,6 +37,7 @@ def add_to_cart(user_id, product_id):
     
     return jsonify(cart[product_id])
 
+#remove specified amount from cart with user id and product id
 @app.route('/cart/<int:user_id>/remove/<int:product_id>', methods=['POST'])
 def remove_from_cart(user_id, product_id):
     cart = carts.get(user_id, {})
