@@ -2,8 +2,6 @@ from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-
-#SQLite database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///products.db'
 db = SQLAlchemy(app)
 
@@ -34,5 +32,14 @@ def add_product():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+        if Product.query.count() == 0:  #Check if the products table is empty
+            #Adding sample products
+            sample_products = [
+                {'name': 'Apple', 'price': 1.0, 'quantity': 100},
+                {'name': 'Banana', 'price': 0.5, 'quantity': 150},
+                {'name': 'Orange', 'price': 0.8, 'quantity': 80}
+            ]
+            for product in sample_products:
+                db.session.add(Product(**product))
+            db.session.commit()
     app.run(port=5000, debug=True)
-
